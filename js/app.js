@@ -93,6 +93,12 @@ function mostrarPlatillos(platillos) {
         inputCantidad.id = `producto-${platillo.id}`
         inputCantidad.classList.add('form-control')
 
+        //funcion que detacta la cantidad y el platillo que se esta agregando
+        inputCantidad.onchange = function () {
+            const cantidad = parseInt(inputCantidad.value)
+            agregarPlatillo({...platillo, cantidad})
+        }
+
         const agregar = document.createElement('div')
         agregar.classList.add('col-md-2')
         agregar.appendChild(inputCantidad)
@@ -103,4 +109,70 @@ function mostrarPlatillos(platillos) {
         row.appendChild(agregar)
         contenido.appendChild(row)
     })
+}
+
+function agregarPlatillo(producto) {
+    //Extraer pedido actual
+    let {pedido} = cliente
+
+   //Revisar que la cantidad sea mayor a 0
+   if (producto.cantidad > 0) {
+
+    //Comprueba si el elemento ya existe
+    if(pedido.some(articulo => articulo.id === producto.id)){
+        //El pedido ya existe se actualiza cantidad
+        const pedidoActualizado = pedido.map(articulo => {
+            if(articulo.id === producto.id){
+                articulo.cantidad = producto.cantidad
+            }
+            return articulo
+        })
+        //Se asigna el nuevo array a cliente.pedido
+        cliente.pedido = [...pedidoActualizado]
+    }else{
+        //El articulo no existe se agrega al array de pedido
+        cliente.pedido = [...pedido, producto]
+    }
+
+   }else{
+    //Eliminar elementos cuando la cantidad es 0
+    const resultado = pedido.filter(articulo => articulo.id !== producto.id)
+    cliente.pedido = [...resultado]
+   }
+
+   //Mostrar el resumen de consumo
+   actualizarResumen()
+}
+
+function actualizarResumen() {
+    const contenido = document.querySelector('#resumen .contenido')
+
+    const resumen = document.createElement('div')
+    resumen.classList.add('col-md-6')
+
+    //Informacion de la mesa
+    const mesa = document.createElement('p')
+    mesa.textContent = 'Mesa: '
+    mesa.classList.add('fw-bold')
+
+    const mesaSpan = document.createElement('span')
+    mesaSpan.textContent = cliente.mesa
+    mesaSpan.classList.add('fw-normal')    
+
+    //Informacion de la hora
+    const hora = document.createElement('p')
+    hora.textContent = 'Hora: '
+    hora.classList.add('fw-bold')
+
+    const horaSpan = document.createElement('span')
+    horaSpan.textContent = cliente.hora
+    horaSpan.classList.add('fw-normal')   
+
+    //Agregar a los elementos padre
+    mesa.appendChild(mesaSpan)
+    hora.appendChild(horaSpan)
+
+    //Agregar al contenido
+    contenido.appendChild(mesa)
+    contenido.appendChild(hora)
 }
