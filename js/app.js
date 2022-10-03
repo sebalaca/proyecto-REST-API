@@ -143,8 +143,13 @@ function agregarPlatillo(producto) {
    //Limpiar el codigo HTML previo
    limpiarHTML()
 
-   //Mostrar el resumen de consumo
-   actualizarResumen()
+   if(cliente.pedido.length){
+       //Mostrar el resumen de consumo
+       actualizarResumen()
+   }else{
+    mensajePedidoVacio()
+   }
+
 }
 
 function actualizarResumen() {
@@ -213,15 +218,37 @@ function actualizarResumen() {
         precioValor.classList.add('fw-normal')
         precioValor.textContent = `$${precio}`
 
+        //Subtotal del articulo
+        const subtotalEL = document.createElement('h4')
+        subtotalEL.classList.add('fw-bold')
+        subtotalEL.textContent = 'Subtotal: '
+
+        const subtotalValor = document.createElement('span')
+        subtotalValor.classList.add('fw-normal')
+        subtotalValor.textContent = calcularSubtotal(precio, cantidad)
+
+        //Boton eliminar
+        const btnEliminar = document.createElement('button')
+        btnEliminar.classList.add('btn', 'btn-danger')
+        btnEliminar.textContent = 'Eliminar del Pedido'
+
+        //Funcion para eleminar del pedido
+        btnEliminar.onclick = function() {
+            eliminarProducto(id)
+        }
+
         //Agregar valores a sus contenedores
         cantidadEL.appendChild(cantidadValor)
         precioEL.appendChild(precioValor)
+        subtotalEL.appendChild(subtotalValor)
 
 
         //Agregar elementos al LI
         lista.appendChild(nombreEL)
         lista.appendChild(cantidadEL)
         lista.appendChild(precioEL)
+        lista.appendChild(subtotalEL)
+        lista.appendChild(btnEliminar)
 
         //Agregar lista al grupo principal
         grupo.appendChild(lista)
@@ -242,4 +269,39 @@ function limpiarHTML() {
     while (contenido.firstChild) {
         contenido.removeChild(contenido.firstChild)
     }
+}
+
+function calcularSubtotal(precio, cantidad) {
+    return `$ ${precio * cantidad}`
+}
+
+function eliminarProducto(id) {
+    const {pedido} = cliente
+    const resultado = pedido.filter(articulo => articulo.id !== id)
+    cliente.pedido = [...resultado]
+
+       //Limpiar el codigo HTML previo
+   limpiarHTML()
+
+    if(cliente.pedido.length){
+        //Mostrar el resumen de consumo
+        actualizarResumen()
+    }else{
+        mensajePedidoVacio()
+    }
+
+    //Reseteamos el formulario a 0
+    const productoEliminado = `#producto-${id}`
+    const inputEliminado = document.querySelector(productoEliminado)
+    inputEliminado.value = 0
+}
+
+function mensajePedidoVacio() {
+    const contenido = document.querySelector('#resumen .contenido')
+
+    const texto = document.createElement('p')
+    texto.classList.add('text-center')
+    texto.textContent = 'Añade los elementos del pedido'
+
+    contenido.appendChild(texto)
 }
