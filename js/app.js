@@ -411,11 +411,11 @@ function calcularPropina() {
 function mostrarTotalHTML(subtotal, total, propina) {
 
     const divTotales = document.createElement('div')
-    divTotales.classList.add('total-pagar')
+    divTotales.classList.add('total-pagar', 'my-5')
     
     //subtotal HTML
     const subtotalParrafo = document.createElement('p')
-    subtotalParrafo.classList.add('fs-3', 'fw-bold', 'mt-5')
+    subtotalParrafo.classList.add('fs-4', 'fw-bold', 'mt-2')
     subtotalParrafo.textContent = 'Subtotal Consumo: '
 
     const subtotalSpan = document.createElement('span')
@@ -426,7 +426,7 @@ function mostrarTotalHTML(subtotal, total, propina) {
 
     //propina HTML
     const propinaParrafo = document.createElement('p')
-    propinaParrafo.classList.add('fs-3', 'fw-bold', 'mt-5')
+    propinaParrafo.classList.add('fs-4', 'fw-bold', 'mt-2')
     propinaParrafo.textContent = 'Propina: '
 
     const propinaSpan = document.createElement('span')
@@ -437,7 +437,7 @@ function mostrarTotalHTML(subtotal, total, propina) {
 
     //Total HTML
     const totalParrafo = document.createElement('p')
-    totalParrafo.classList.add('fs-3', 'fw-bold', 'mt-5')
+    totalParrafo.classList.add('fs-4', 'fw-bold', 'mt-2')
     totalParrafo.textContent = 'Total a pagar: '
 
     const totalSpan = document.createElement('span')
@@ -445,6 +445,12 @@ function mostrarTotalHTML(subtotal, total, propina) {
     totalSpan.textContent = `$${total}`
 
     totalParrafo.appendChild(totalSpan)
+
+    //Eliminar ultimo resultado
+    const totalPagarDiv = document.querySelector('.total-pagar')
+    if(totalPagarDiv) {
+        totalPagarDiv.remove()
+    }
 
     divTotales.appendChild(subtotalParrafo)
     divTotales.appendChild(propinaParrafo)
